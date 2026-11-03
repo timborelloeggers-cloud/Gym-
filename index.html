@@ -1534,12 +1534,17 @@ textarea.inp{min-height:80px;resize:vertical;line-height:1.4}
       <div class="panel"><h3>Backup</h3><div class="sm muted">Letztes Backup: ${lastB}. Ab und zu eine Sicherung in „Dateien“/iCloud legen – dann ist auch ein neues Handy kein Problem.</div>
         <button class="cta" data-exp>${I.down}Backup speichern</button>
         <button class="cta ghost" data-imp>${I.up}Backup laden</button></div>
-      <div class="panel"><h3>Beispiele</h3><div class="sm muted">Push/Pull/Legs und zwei Armwrestling-Tage als Vorlage hinzufügen (deine Daten bleiben).</div><button class="cta ghost" data-demo>${I.plus}Beispiel-Trainings hinzufügen</button></div>`, el => {
+      <div class="panel"><h3>Beispiele</h3><div class="sm muted">Push/Pull/Legs und zwei Armwrestling-Tage als Vorlage hinzufügen (deine Daten bleiben).</div><button class="cta ghost" data-demo>${I.plus}Beispiel-Trainings hinzufügen</button></div>
+      <div class="panel"><h3>Neu anfangen</h3><div class="sm muted">Löscht alle Trainings, Übungen und Sätze auf diesem Gerät.</div><button class="cta danger" data-reset>${I.trash}Alles zurücksetzen</button></div>`, el => {
       el.onclick = async e => {
         const b = e.target.closest('button'); if (!b) return;
         if (b.hasAttribute('data-x')) return closeSheet();
         if (b.hasAttribute('data-exp')) return exportData();
         if (b.hasAttribute('data-imp')) return $('#importFile').click();
+        if (b.hasAttribute('data-reset')) {
+          if (!b.dataset.sure) { b.dataset.sure = '1'; b.innerHTML = I.trash + 'Wirklich alles löschen? Nochmal tippen'; return; }
+          S = blank(); S.demoCleared = true; save(); closeSheet(); R.plan = null; R.ex = null; R.all = false; render(true); toast('Alles gelöscht – leg dein erstes Training an'); return;
+        }
         if (b.hasAttribute('data-demo')) { const D = demoData(); D.ex.forEach(x => S.ex.push(x)); D.plans.forEach(x => S.plans.push(x)); save(); closeSheet(); render(true); toast('Beispiel-Trainings hinzugefügt'); }
       };
     });
